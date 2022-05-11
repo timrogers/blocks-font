@@ -27,11 +27,11 @@
       "id": "font-block",
       "title": "Font Block",
       "description": "A block for previewing font files",
-      "entry": "/src/blocks/example-file-block/index.tsx",
+      "entry": "/src/blocks/font-block/index.tsx",
       "extensions": [
         "*"
       ],
-      "example_path": "https://github.com/facebook/react/blob/main/packages/react-dom/index.js"
+      "example_path": "https://github.com/timrogers/blocks-font/blob/main/examples/SourceCodePro-Regular.ttf"
     }
   ],
   "dependencies": {

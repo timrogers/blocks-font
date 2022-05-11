@@ -1,43 +1,83 @@
-import { FileBlockProps, getLanguageFromFilename } from "@githubnext/utils";
-import { Button, Box } from "@primer/react";
-import "./index.css";
+import { FileBlockProps } from "@githubnext/utils";
+import { Box } from "@primer/react";
+import { useEffect, useState } from "react";
 
-export default function (props: FileBlockProps) {
-  const { context, content, metadata, onUpdateMetadata } = props;
-  const language = Boolean(context.path)
-    ? getLanguageFromFilename(context.path)
-    : "N/A";
+const SUPPORTED_EXTENSIONS = ["ttf"];
 
-  return (
-    <Box p={4}>
-      <Box
-        borderColor="border.default"
-        borderWidth={1}
-        borderStyle="solid"
-        borderRadius={6}
-        overflow="hidden"
-      >
+const FontPreviewComponent = (props: { filename: string; url: string }) => {
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  const { filename, url } = props;
+
+  useEffect(() => {
+    const fontFace = new FontFace(filename, `url(${url})`);
+
+    fontFace.load().then((loadedFontFace) => {
+      document.fonts.add(loadedFontFace);
+      setIsLoading(false);
+    });
+  });
+
+  if (isLoading) {
+    return (
+      <Box p={4}>
         <Box
-          bg="canvas.subtle"
-          p={3}
-          borderBottomWidth={1}
-          borderBottomStyle="solid"
           borderColor="border.default"
+          borderWidth={1}
+          borderStyle="solid"
+          borderRadius={6}
+          overflow="hidden"
         >
-          File: {context.path} {language}
-        </Box>
-        <Box p={4}>
-          <p>Metadata example: this button has been clicked:</p>
-          <Button
-            onClick={() =>
-              onUpdateMetadata({ number: (metadata.number || 0) + 1 })
-            }
-          >
-            {metadata.number || 0} times
-          </Button>
-          <pre className="mt-3 p-3">{content}</pre>
+          Loading font...
         </Box>
       </Box>
-    </Box>
-  );
+    );
+  } else {
+    return (
+      <Box p={4}>
+        <Box
+          borderColor="border.default"
+          borderWidth={1}
+          borderStyle="solid"
+          borderRadius={6}
+          overflow="hidden"
+        >
+          <span style={{ fontFamily: `'"${filename}"` }}>
+            The quick brown fox jumped over the lazy dog
+          </span>
+        </Box>
+      </Box>
+    );
+  }
+};
+
+export default function (props: FileBlockProps) {
+  const { context } = props;
+
+  const filename = Boolean(context.file)
+    ? context.file.split(".").shift()
+    : undefined;
+  const extension = Boolean(context.path)
+    ? context.path.split(".").pop()
+    : undefined;
+
+  if (filename && extension && SUPPORTED_EXTENSIONS.includes(extension)) {
+    const url = `https://github.com/${context.owner}/${context.repo}/blob/${context.sha}/${context.path}?raw=true`;
+
+    return <FontPreviewComponent url={url} filename={filename} />;
+  } else {
+    return (
+      <Box p={4}>
+        <Box
+          borderColor="border.default"
+          borderWidth={1}
+          borderStyle="solid"
+          borderRadius={6}
+          overflow="hidden"
+        >
+          This is not a supported file type.
+        </Box>
+      </Box>
+    );
+  }
 }

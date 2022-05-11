@@ -6,11 +6,11 @@ import { useDebounce, useLocalStorage, usePackageJson } from "./hooks";
 function App() {
   const [blockId, setBlockId] = useLocalStorage(
     "blockId",
-    "/src/blocks/example-file-block/index.tsx"
+    "/src/blocks/font-block/index.tsx"
   );
   const [fileUrl, setFileUrl] = useLocalStorage(
     "fileUrl",
-    "https://github.com/githubocto/flat/blob/main/src/git.ts"
+    "https://github.com/timrogers/blocks-font/blob/main/examples/SourceCodePro-Regular.ttf"
   );
 
   const debouncedFileUrl = useDebounce(fileUrl, 500);
