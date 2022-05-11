@@ -24,9 +24,9 @@
   "blocks": [
     {
       "type": "file",
-      "id": "file-block",
-      "title": "Example File Block",
-      "description": "A basic file block",
+      "id": "font-block",
+      "title": "Font Block",
+      "description": "A block for previewing font files",
       "entry": "/src/blocks/example-file-block/index.tsx",
       "extensions": [
         "*"
